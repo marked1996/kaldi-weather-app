@@ -24,7 +24,7 @@ function CurrentLocationWeather({
       <p className="mt-2 mb-1 font-medium tracking-tighter text-center text-title">
         {Math.round(temp)}°C
       </p>
-      <p className="mb-12">Feels like: {Math.round(feels_like)}</p>
+      <p className="mb-12">Feels like: {Math.round(feels_like)}°C</p>
       <div className="flex flex-wrap items-center justify-between">
         <p className="text-sm text-gray">Min: {Math.round(temp_min)}°C</p>
         <p className="text-sm text-gray">Max: {Math.round(temp_max)}°C</p>

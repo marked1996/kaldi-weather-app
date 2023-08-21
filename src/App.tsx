@@ -1,6 +1,7 @@
 import "./App.css";
 import { Suspense, useEffect, useState } from "react";
-// import Search from "./components/Search";
+import { useParams, useSearchParams, useLocation } from "react-router-dom";
+
 import CurrentLocationWeather from "./components/CurrentLocationWeather";
 import PreviousSearchCard from "./components/PreviousSearchCard";
 const API_KEY = import.meta.env.VITE_OPEN_WEATHER_API_KEY;
@@ -28,6 +29,18 @@ function App() {
   const [history, setHistory] = useState<WeatherData[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const [searchParams, setSearchParams] = useSearchParams({ city: "" });
+  const cityFromParams = searchParams.get("city");
+
+  console.log(history);
+
+  // this logs 4 more weatherData logs or maybe 2 times?
+  // useEffect(() => {
+  //   if (cityFromParams) {
+  //     getWeatherData(cityFromParams);
+  //   }
+  // }, [cityFromParams]);
+
   async function getWeatherData(cityName: string) {
     try {
       const response = await fetch(
@@ -37,34 +50,51 @@ function App() {
         const currentLocationData: WeatherData = await response.json();
         setWeatherData(currentLocationData);
         setErrorMessage(null);
+        setSearchParams({ city: cityName }); //update URL parameter here
       } else {
         setErrorMessage("Mesto ne obstaja. Poskusite ponovno.");
       }
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error);
     }
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    getWeatherData(cityName).then(() => {
-      setCityName("");
-    });
+    // getWeatherData(cityName).then(() => {
+    //   setSearchParams({ city: cityName });
+    //   setCityName("");
+    // });
+    setCityName("");
+    setSearchParams({ city: cityName });
   }
+
+  useEffect(() => {
+    if (cityFromParams) {
+      getWeatherData(cityFromParams);
+    }
+  }, [cityFromParams]); //fetch weather data when cityFromParams changes
+
+  useEffect(() => {
+    if (cityFromParams) {
+      getWeatherData(cityFromParams);
+    }
+  }, []); //run only once on mount (initial weather data fetch with url params)
 
   //update history after weatherData is set
   useEffect(() => {
     if (weatherData) {
       setHistory((prevHistory) => {
-        const newHistory = [...prevHistory.slice(-4), weatherData]; // Limit to 5 entries
+        // Limit to 5 items
+        const newHistory = [...prevHistory.slice(-4), weatherData];
         return newHistory.length > 5 ? newHistory.slice(-5) : newHistory;
       });
     }
   }, [weatherData]);
 
   function handlePreviousSearchClick(clickedCityName: string) {
-    setCityName(clickedCityName);
+    // setSearchParams({ city: "" });
     getWeatherData(clickedCityName);
   }
 
@@ -86,7 +116,7 @@ function App() {
           type="text"
           id="city_name"
           className="bg-light border border-border text-dark text-sm rounded-lg block w-full p-2.5 outline-none focus:border-1 focus:ring-2 focus:ring-blue-500"
-          placeholder="Vpišite ime mesta in pritisnite enter"
+          placeholder="Vpišite ime mesta in pritisnite tipko enter"
           required
         ></input>
         {errorMessage && (
@@ -115,20 +145,6 @@ function App() {
           </Suspense>
         </>
       )}
-
-      {/* <h3 className="mt-8 mb-2 text-sm font-medium leading-tight text-left text-dark text-xlarge">
-        Zgodovina
-      </h3>
-      <section className="flex gap-2">
-        {history &&
-          history.map((city, idx) => (
-            <PreviousSearchCard
-              key={idx}
-              data={city}
-              onClick={handlePreviousSearchClick}
-            />
-          ))}
-      </section> */}
       {history.length > 0 ? (
         <section className="flex flex-col gap-2">
           <h3 className="mt-8 mb-2 text-sm font-medium leading-tight text-left text-dark text-xlarge">
