@@ -32,14 +32,7 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams({ city: "" });
   const cityFromParams = searchParams.get("city");
 
-  console.log(history);
-
-  // this logs 4 more weatherData logs or maybe 2 times?
-  // useEffect(() => {
-  //   if (cityFromParams) {
-  //     getWeatherData(cityFromParams);
-  //   }
-  // }, [cityFromParams]);
+  // console.log(history);
 
   async function getWeatherData(cityName: string) {
     try {
@@ -76,11 +69,11 @@ function App() {
     }
   }, [cityFromParams]); //fetch weather data when cityFromParams changes
 
-  useEffect(() => {
-    if (cityFromParams) {
-      getWeatherData(cityFromParams);
-    }
-  }, []); //run only once on mount (initial weather data fetch with url params)
+  // useEffect(() => {
+  //   if (cityFromParams) {
+  //     getWeatherData(cityFromParams);
+  //   }
+  // }, []); //run only once on mount (initial weather data fetch with url params)
 
   //update history after weatherData is set
   useEffect(() => {
@@ -155,7 +148,7 @@ function App() {
               <PreviousSearchCard
                 key={index}
                 data={city}
-                onClick={handlePreviousSearchClick}
+                // onClick={handlePreviousSearchClick}
               />
             ))}
           </div>
