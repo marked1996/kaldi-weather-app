@@ -1,6 +1,6 @@
 import "./App.css";
 import { Suspense, useEffect, useState } from "react";
-import { useParams, useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import CurrentLocationWeather from "./components/CurrentLocationWeather";
 import PreviousSearchCard from "./components/PreviousSearchCard";
@@ -32,8 +32,6 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams({ city: "" });
   const cityFromParams = searchParams.get("city");
 
-  // console.log(history);
-
   async function getWeatherData(cityName: string) {
     try {
       const response = await fetch(
@@ -55,25 +53,16 @@ function App() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    // getWeatherData(cityName).then(() => {
-    //   setSearchParams({ city: cityName });
-    //   setCityName("");
-    // });
     setCityName("");
     setSearchParams({ city: cityName });
   }
 
+  //fetch weather data when params change
   useEffect(() => {
     if (cityFromParams) {
       getWeatherData(cityFromParams);
     }
-  }, [cityFromParams]); //fetch weather data when cityFromParams changes
-
-  // useEffect(() => {
-  //   if (cityFromParams) {
-  //     getWeatherData(cityFromParams);
-  //   }
-  // }, []); //run only once on mount (initial weather data fetch with url params)
+  }, [cityFromParams]);
 
   //update history after weatherData is set
   useEffect(() => {
@@ -86,10 +75,10 @@ function App() {
     }
   }, [weatherData]);
 
-  function handlePreviousSearchClick(clickedCityName: string) {
-    // setSearchParams({ city: "" });
-    getWeatherData(clickedCityName);
-  }
+  // function handlePreviousSearchClick(clickedCityName: string) {
+  //   // setSearchParams({ city: "" });
+  //   getWeatherData(clickedCityName);
+  // }
 
   return (
     <main className="max-w-3xl p-6 m-auto border rounded-lg border-border">

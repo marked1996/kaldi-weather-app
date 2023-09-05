@@ -12,7 +12,7 @@ function PreviousSearchCard({ data, onClick }: PreviousSearchCardProps) {
   return (
     <article
       onClick={() => onClick(data.name)}
-      className="flex flex-col gap-2 p-2 transition-all duration-300 border rounded-lg cursor-pointer border-border hover:border-dark basis-1/5 grow-0"
+      className="flex flex-col gap-2 p-2 transition-all duration-300 border rounded-lg border-border basis-1/5 grow-0"
     >
       <h3 className="block text-sm tracking-tighter text-dark text-xlarge">
         {data.name}
